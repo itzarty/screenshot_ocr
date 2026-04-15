@@ -5,8 +5,9 @@
 #include <bits/this_thread_sleep.h>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
-#include <thread>
+
 #include <X11/Xlib.h>
+#include <X11/extensions/Xfixes.h>
 
 class Worker {
 public:

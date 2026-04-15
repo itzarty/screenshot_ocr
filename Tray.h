@@ -2,14 +2,13 @@
 
 #include <string>
 #include <fstream>
-#include <iostream>
 #include <functional>
 #include <libayatana-appindicator/app-indicator.h>
 
 class Tray {
 public:
     Tray();
-    void setText(std::string text);
+    void setText(const std::string &text);
     void run();
     void setQuitHandler(std::function<void()> callback);
 private:
@@ -25,7 +24,7 @@ private:
     void copy();
     void save();
     void quit();
-    GtkWidget* createItem(std::string label);
+    GtkWidget* createItem(const std::string &label, void (*itemCallback)(GtkWidget*, gpointer));
 
     std::function<void()> callback;
 };

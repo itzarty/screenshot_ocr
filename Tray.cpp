@@ -7,37 +7,41 @@ Tray::Tray() {
     app_indicator_set_status(this->indicator, APP_INDICATOR_STATUS_ACTIVE);
 
     menu = gtk_menu_new();
-    textItem = createItem("No text found");
-    copyItem = createItem("Copy to clipboard");
-    saveItem = createItem("Save to file");
-    quitItem = createItem("Quit");
 
-    g_signal_connect(copyItem, "activate", G_CALLBACK(+[](GtkWidget*, gpointer data) {
-        Tray* self = static_cast<Tray*>(data);
-        self->copy();
-    }), this);
+    textItem = createItem("No text found", nullptr);
 
-    g_signal_connect(saveItem, "activate", G_CALLBACK(+[](GtkWidget*, gpointer data) {
-        Tray* self = static_cast<Tray*>(data);
-        self->save();
-    }), this);
+    copyItem = createItem("Copy to clipboard",
+        +[](GtkWidget*, gpointer data) {
+            static_cast<Tray*>(data)->copy();
+        }
+    );
 
-    g_signal_connect(quitItem, "activate", G_CALLBACK(+[](GtkWidget*, gpointer data) {
-        Tray* self = static_cast<Tray*>(data);
-        self->quit();
-    }), this);
+    saveItem = createItem("Save to a file",
+        +[](GtkWidget*, gpointer data) {
+            static_cast<Tray*>(data)->save();
+        }
+    );
+
+    quitItem = createItem("Quit",
+        +[](GtkWidget*, gpointer data) {
+            static_cast<Tray*>(data)->quit();
+        }
+    );
 
     gtk_widget_show_all(menu);
     app_indicator_set_menu(indicator, GTK_MENU(menu));
 }
 
-GtkWidget* Tray::createItem(std::string label) {
+GtkWidget* Tray::createItem(const std::string &label, void (*itemCallback)(GtkWidget*, gpointer)) {
     GtkWidget* item = gtk_menu_item_new_with_label(label.c_str());
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+
+    if (itemCallback != nullptr) g_signal_connect(item, "activate", G_CALLBACK(itemCallback), this);
+
     return item;
 }
 
-void Tray::setText(std::string text) {
+void Tray::setText(const std::string &text) {
     this->currentText = text;
     gtk_menu_item_set_label(GTK_MENU_ITEM(this->textItem), this->currentText.c_str());
 }
