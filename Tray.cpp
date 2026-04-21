@@ -1,6 +1,7 @@
 #include "Tray.h"
 
 Tray::Tray() {
+    gdk_set_allowed_backends("x11");
     gtk_init(nullptr, nullptr);
 
     indicator = app_indicator_new("screenshot_ocr", "indicator-messages", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
@@ -48,7 +49,7 @@ void Tray::setText(const std::string &text) {
 
 void Tray::copy() {
     GtkClipboard* clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-    gtk_clipboard_set_text(clipboard, currentText.c_str(), -1);
+    gtk_clipboard_set_text(clipboard, this->currentText.c_str(), -1);
 }
 
 void Tray::save() {

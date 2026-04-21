@@ -17,10 +17,13 @@ Designed as a proof-of-concept for X11, it also works seamlessly under Wayland (
 ## Usage
 
 ```bash
-$ ./screenshot_ocr [language]
+$ ./screenshot_ocr [language(s)]
 ```
 
-* **Example** => `./screenshot_ocr slk` (Loads Slovak)
+* **Examples**
+  * `./screenshot_ocr slk` - Loads Slovak
+  * `./screenshot_ocr eng+slk` - Loads English **&** Slovak
+  * `./screenshot_ocr eng+slk+deu+...`
 * If no argument is provided, it falls back to `eng`.
 
 ## Dependencies

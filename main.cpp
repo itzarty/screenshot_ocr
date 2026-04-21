@@ -6,8 +6,23 @@ std::vector<std::string> getLanguages() {
     std::vector<std::string> languages;
     tesseract::TessBaseAPI tess;
     tess.Init(nullptr, nullptr);
-    tess.GetAvailableLanguagesAsVector( &languages );
+    tess.GetAvailableLanguagesAsVector(&languages);
     return languages;
+}
+
+bool validateLanguage(const char* language) {
+    std::vector<std::string> languages = getLanguages();
+
+    std::string token;
+    std::istringstream tokenStream(language);
+    while (std::getline(tokenStream, token, '+')) {
+        if (std::ranges::find(languages, token) == languages.end()) {
+            std::cerr << "Unknown language \"" << token << "\"" << std::endl;
+            return false;
+        }
+    }
+
+    return true;
 }
 
 int main(int argc, char **argv) {
@@ -17,12 +32,12 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    std::vector<std::string> languages = getLanguages();
-
     const char *language = argc > 1 ? argv[1] : "eng";
-    if (std::find(languages.begin(), languages.end(), language) == languages.end()) {
-        std::cerr << "Unknown language \"" << language << R"(". Falling back to "eng".)" << std::endl;
-        language = "eng";
+    bool languageValid = validateLanguage(language);
+
+    if (!languageValid) {
+        std::cerr << "Language invalid, terminating." << std::endl;
+        return 1;
     }
 
     tesseract::TessBaseAPI tess;
